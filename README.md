@@ -8,4 +8,7 @@
     source env/bin/activate
     pip install -r requirements.txt
     ```
-4. 
+4. To start the webserver, run
+   ```sh
+   fastapi dev main.py
+   ```

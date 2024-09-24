@@ -4,7 +4,9 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from models import Product
+from settings import Settings
 
+settings = Settings()
 
 def retry(fn):
     max_retries = 2
@@ -25,7 +27,7 @@ def retry(fn):
 
 class WebScrapper:
 
-    def __init__(self, num_of_pages:int, url:str = "https://dentalstall.com/shop/"):
+    def __init__(self, num_of_pages:int, url:str = settings.website_url):
         self.num_of_pages = num_of_pages
         self.base_url = url
 
