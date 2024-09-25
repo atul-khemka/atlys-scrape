@@ -1,4 +1,4 @@
-from pydantic import BaseModel, AnyUrl
+from pydantic import BaseModel, AnyUrl, Field
 
 
 class Product(BaseModel):
@@ -14,5 +14,5 @@ class GenericResponse(BaseModel):
 
 
 class ScrapeProductInput(BaseModel):
-    no_of_page: int | None = None
+    no_of_page: int | None = Field(default=2, gt=0, description="no_of_page must be greater than zero")
     proxy: str | None = None

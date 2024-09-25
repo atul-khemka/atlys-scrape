@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from models import Product
-from settings import Settings
 
-settings = Settings()
+class MaxRetriesReached(Exception):
+    pass
 
 def retry(fn):
     max_retries = 2
@@ -21,13 +21,13 @@ def retry(fn):
             elif status in [429, 500, 502, 503, 504, 404]:
                 print(f'Received status: {status}. Retrying in {delay_time} seconds.')
                 time.sleep(delay_time)
-        raise Exception("Maximum retries reached.")
+        raise MaxRetriesReached("Maximum retries reached. Please try after sometime")
     return wrapper
 
 
 class WebScrapper:
 
-    def __init__(self, num_of_pages:int, url:str = settings.website_url):
+    def __init__(self, num_of_pages:int, url:str):
         self.num_of_pages = num_of_pages
         self.base_url = url
 
@@ -47,7 +47,7 @@ class WebScrapper:
                     )
                     result.append(prod)
                 return result
-        except Exception as e:
+        except MaxRetriesReached as e:
             raise e
 
 
