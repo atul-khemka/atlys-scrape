@@ -1,16 +1,22 @@
 import time
+import uuid
+
 import requests
 from bs4 import BeautifulSoup
 from requests import Response
 
 from models import Product
+from settings import Settings
+
 
 class MaxRetriesReached(Exception):
     pass
 
+settings = Settings()
+
 def retry(fn):
-    max_retries = 2
-    delay_time = 3
+    max_retries = settings.max_retry
+    delay_time = settings.delay_retry
 
     def wrapper(*args, **kwargs):
         for _ in range(max_retries):
@@ -18,7 +24,7 @@ def retry(fn):
             status = res.status_code
             if 200 <= status < 300:
                 return res
-            elif status in [429, 500, 502, 503, 504, 404]:
+            elif status in range(400, 600):
                 print(f'Received status: {status}. Retrying in {delay_time} seconds.')
                 time.sleep(delay_time)
         raise MaxRetriesReached("Maximum retries reached. Please try after sometime")
@@ -71,3 +77,7 @@ class WebScrapper:
     def _get_image(self, product_html) -> str:
         img = product_html.find("div", class_="mf-product-thumbnail").a.noscript.img["src"]
         return img
+
+
+def generate_unique_id(name:str) -> str:
+    return str(uuid.uuid3(uuid.NAMESPACE_OID, name))

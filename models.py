@@ -4,7 +4,7 @@ from pydantic import BaseModel, AnyUrl, Field
 class Product(BaseModel):
     name:str
     price:float
-    image: AnyUrl
+    image: AnyUrl | None
 
 
 class GenericResponse(BaseModel):
