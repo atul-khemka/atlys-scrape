@@ -75,9 +75,7 @@ class DataRepository:
     def update_db(self, id: str, product: Product):
         saved_product = self.r.hget('products', id)
         if saved_product:
-            print("found")
             if json.loads(saved_product)["price"] != product.price:
                 self.r.hset('products', id, product.model_dump_json())
-                print("update")
         else:
             self.r.hset('products', id, product.model_dump_json())
